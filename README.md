@@ -56,7 +56,7 @@ graph TD
         API[FastAPI Routers]
         API --> LangGraph[LangGraph State Machine]
         
-        subgraph LangGraph Orchestration
+        subgraph LangGraph_Orchestration [LangGraph Orchestration]
             DU[Dataset Understanding Agent] --> DQ[Data Quality Agent]
             DQ --> AP[Analysis Planning Agent]
             AP --> |Interrupt| HIL{Human Approval}
@@ -72,13 +72,13 @@ graph TD
     EX --> |Sandboxed Code| Sandbox[Python Sandbox]
     RG --> |Embed & Store| PGV[(pgvector Semantic Memory)]
     
-    subgraph AI Providers
+    subgraph AI_Providers [AI Providers]
         Gemini[Gemini 2.5 Flash]
         OpenRouter[OpenRouter / Nemotron]
         Embed[text-embedding-004]
     end
     
-    LangGraph Orchestration <--> AI Providers
+    LangGraph_Orchestration <--> AI_Providers
 ```
 
 ---
