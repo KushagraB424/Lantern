@@ -125,7 +125,7 @@ function AnalysisConfig() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
       
-      html2pdf().set(opt).from(reportRef.current).save();
+      html2pdf().set(opt as any).from(reportRef.current).save();
     } catch (e) {
       console.error("PDF generation failed:", e);
       alert("Failed to generate PDF.");
