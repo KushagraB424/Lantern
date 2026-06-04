@@ -19,7 +19,8 @@ export default function HistoryPage() {
     setIsSearching(true);
     setHasSearched(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/search?q=${encodeURIComponent(query)}`);
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
       const data = await response.json();
       if (data.status === "success") {
         setResults(data.results);

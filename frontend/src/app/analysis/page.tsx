@@ -46,7 +46,8 @@ function AnalysisConfig() {
   const handleStartAnalysis = async () => {
     setIsStarting(true);
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/analysis/start", {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const response = await fetch(`${API_BASE}/api/analysis/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -79,7 +80,8 @@ function AnalysisConfig() {
     setIsResuming(true);
     
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/analysis/${threadId}/resume`, {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const response = await fetch(`${API_BASE}/api/analysis/${threadId}/resume`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

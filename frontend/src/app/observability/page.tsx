@@ -42,7 +42,8 @@ export default function ObservabilityPage() {
     if (!threadId) return;
     setIsSearching(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/observability/${threadId}/trace`);
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+      const response = await fetch(`${API_BASE}/api/observability/${threadId}/trace`);
       const data = await response.json();
       if (data.status === "success") {
         setTrace(data.trace);
