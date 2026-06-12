@@ -7,6 +7,8 @@ Lantern is an advanced, multi-agent AI analytics platform designed to autonomous
 ---
 
 ## Demo
+> [!IMPORTANT]
+**[Access the Live Platform](https://lantern-three-beta.vercel.app/)**
 
 ### Dashboard
 ![Dashboard](./assets/dashboard.png)
