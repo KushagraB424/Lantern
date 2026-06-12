@@ -19,12 +19,38 @@ export default function HistoryPage() {
     setIsSearching(true);
     setHasSearched(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
-      const response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
-      const data = await response.json();
-      if (data.status === "success") {
-        setResults(data.results);
+      // First check local storage
+      const historyReportsStr = localStorage.getItem("history_reports") || "[]";
+      let localResults: any[] = [];
+      try {
+        const historyReports = JSON.parse(historyReportsStr);
+        localResults = historyReports.filter((r: any) => 
+          r.summary?.toLowerCase().includes(query.toLowerCase()) || 
+          r.dataset_id?.toLowerCase().includes(query.toLowerCase()) ||
+          r.report_text?.toLowerCase().includes(query.toLowerCase())
+        ).map((r: any) => ({ ...r, similarity_score: 1.0 })); // Fake high score for local match
+      } catch (e) {
+        console.error("Failed to parse local history reports", e);
       }
+
+      // Then check API
+      let apiResults: any[] = [];
+      try {
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        const response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        if (data.status === "success") {
+          apiResults = data.results;
+        }
+      } catch (e) {
+        console.error("API Search failed", e);
+      }
+      
+      // Merge and deduplicate by dataset_id
+      const combined = [...localResults, ...apiResults];
+      const unique = combined.filter((v, i, a) => a.findIndex(t => t.dataset_id === v.dataset_id) === i);
+      setResults(unique);
+      
     } catch (e) {
       console.error("Search failed", e);
     } finally {

@@ -18,7 +18,7 @@ def recommendation_generation_node(state: GraphState) -> GraphState:
 I will provide you with 'Key Insights' generated from a dataset.
 Your task is to write a 'Recommendations' section in Markdown.
 Suggest business actions, highlight risks, highlight opportunities, and suggest next analyses.
-Be concise, actionable, and professional.
+Be extremely concise (max 3-5 bullet points total).
 """),
         ("human", "Here are the Insights:\n{insights}\n\nPlease generate the Recommendations.")
     ])

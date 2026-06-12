@@ -66,7 +66,8 @@ Here are the issues found:
 {issues_text}
 
 Please generate a short, professional Data Quality Review report in markdown.
-Include the score prominently and summarize the issues.
+Include the score prominently and summarize the issues in max 2 bullet points.
+Be extremely concise.
         """)
     ])
     

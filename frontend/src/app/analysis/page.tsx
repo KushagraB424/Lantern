@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, Suspense, useRef } from "react";
+import { useState, Suspense, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Settings2, CheckCircle2, Edit3, Loader2, Code2, BarChart3, Terminal, FileText, Download } from "lucide-react";
 import { PlotlyChart } from "@/components/ui/plotly-chart";
@@ -28,6 +28,34 @@ function AnalysisConfig() {
   const [executionData, setExecutionData] = useState<any>(null);
   
   const reportRef = useRef<HTMLDivElement>(null);
+
+  // Load state from local storage on mount
+  useEffect(() => {
+    if (!datasetId) return;
+    const savedState = localStorage.getItem(`analysis_state_${datasetId}`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        if (parsed.threadId) setThreadId(parsed.threadId);
+        if (parsed.plan) setPlan(parsed.plan);
+        if (parsed.qualityScore) setQualityScore(parsed.qualityScore);
+        if (parsed.executionData) setExecutionData(parsed.executionData);
+      } catch (e) {
+        console.error("Failed to parse local storage state", e);
+      }
+    }
+  }, [datasetId]);
+
+  // Save state to local storage when it changes
+  useEffect(() => {
+    if (!datasetId) return;
+    localStorage.setItem(`analysis_state_${datasetId}`, JSON.stringify({
+      threadId,
+      plan,
+      qualityScore,
+      executionData
+    }));
+  }, [datasetId, threadId, plan, qualityScore, executionData]);
 
   if (!datasetId) {
     return (
@@ -94,6 +122,29 @@ function AnalysisConfig() {
       if (!response.ok) throw new Error(data.detail);
       
       setExecutionData(data);
+      
+      // Also save to history_reports array for the History page to use
+      const historyReportsStr = localStorage.getItem("history_reports") || "[]";
+      try {
+        const historyReports = JSON.parse(historyReportsStr);
+        // Avoid duplicate reports for same dataset
+        const existingIdx = historyReports.findIndex((r: any) => r.dataset_id === datasetId);
+        const newReport = {
+          dataset_id: datasetId,
+          summary: data.plan?.split('\n')[0] || "Analysis report",
+          quality_score: qualityScore,
+          report_text: data.final_report,
+          timestamp: new Date().toISOString()
+        };
+        if (existingIdx !== -1) {
+          historyReports[existingIdx] = newReport;
+        } else {
+          historyReports.unshift(newReport); // Add to beginning
+        }
+        localStorage.setItem("history_reports", JSON.stringify(historyReports));
+      } catch (e) {
+        console.error("Failed to update history reports in localStorage", e);
+      }
     } catch (e: any) {
       alert("Error resuming: " + e.message);
     } finally {

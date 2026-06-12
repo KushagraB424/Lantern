@@ -23,7 +23,7 @@ def analysis_planning_node(state: GraphState) -> GraphState:
     )
     
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are an AI Analysis Planner. Based on the dataset summary and data quality, create a structured step-by-step analysis plan."),
+        ("system", "You are an AI Analysis Planner. Based on the dataset summary and data quality, create a brief, high-level structured step-by-step analysis plan. Keep the plan extremely concise (max 3-5 bullet points) to save tokens."),
         ("human", """
 Dataset Summary:
 {understanding}
@@ -32,7 +32,7 @@ Data Quality (Score: {quality_score}/100):
 {quality_issues}
 
 Please generate an Analysis Plan. Format it as a markdown list of clear steps.
-The plan should adapt to any data quality issues (e.g. recommend dropping missing values if prevalent) and suggest meaningful aggregations/visualizations.
+The plan should be very brief and adapt to any data quality issues.
         """)
     ])
     

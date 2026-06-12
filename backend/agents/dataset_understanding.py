@@ -60,8 +60,9 @@ Here is a sample of the first 5 rows:
 
 Please generate a Dataset Summary in markdown format. 
 Include:
-1. A brief overview of what this dataset appears to represent.
-2. 3-5 Potential Analysis Areas.
+1. A brief overview of what this dataset appears to represent (max 2 sentences).
+2. 3 Potential Analysis Areas (max 1 sentence each).
+DO NOT be verbose. Be extremely brief.
         """)
     ])
     

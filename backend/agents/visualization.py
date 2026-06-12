@@ -35,7 +35,7 @@ CRITICAL REQUIREMENTS:
 4. Your script MUST output ONLY the final list of serialized chart JSON strings by printing a JSON array to stdout: `print(json.dumps(chart_json_list))`
 5. Write ONLY the python code in a ```python ... ``` block. BE EXTREMELY CONCISE. Do not include markdown headers, explanations, or long comments, as you have a strict token limit and your code will get truncated.
 """),
-        ("human", "Here is the structure of the JSON artifact:\n{artifact_summary}\n\nPlease generate the Python code.")
+        ("human", "Here is the structure of the JSON artifact:\n{artifact_summary}\n\nPlease generate the Python code. Keep it brief to save tokens.")
     ])
     
     artifact_summary = {}

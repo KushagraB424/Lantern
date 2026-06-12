@@ -1,6 +1,7 @@
 import { Sparkles, BarChart2, CheckCircle2, FileText, Code2, Terminal } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { PlotlyChart } from "@/components/ui/plotly-chart";
 
 const showcaseData = {
   final_report: `
@@ -33,7 +34,22 @@ The dataset contains 50,000 records of online transactions across 12 countries.
 - **Expand** electronics inventory ahead of next quarter.
 `,
   generated_code: "import pandas as pd\nimport json\n\ndf = pd.read_csv(DATASET_PATH)\n# Aggregation logic\nresult = {'tables': {'revenue': [{'Region': 'Europe', 'Rev': 45000}]}}\nprint(json.dumps(result))",
-  execution_logs: "Process completed successfully in 1.2 seconds."
+  execution_logs: "Process completed successfully in 1.2 seconds.",
+  visualizations: [
+    {
+      data: [{
+        x: ['North America', 'Europe', 'Asia', 'South America', 'Africa'],
+        y: [30000, 45000, 20000, 5000, 0],
+        type: 'bar',
+        marker: { color: '#3b82f6' }
+      }],
+      layout: {
+        title: 'Revenue by Region',
+        xaxis: { title: 'Region' },
+        yaxis: { title: 'Revenue (USD)' }
+      }
+    }
+  ]
 };
 
 export default function ShowcasePage() {
@@ -61,11 +77,11 @@ export default function ShowcasePage() {
           
           <div className="mt-12 space-y-8">
              <h3 className="text-2xl font-bold border-b pb-2">Interactive Visualizations (Demo)</h3>
-             <div className="h-[300px] border rounded-lg p-2 flex items-center justify-center bg-muted/50 shadow-inner">
-                <p className="text-muted-foreground font-medium flex items-center gap-2">
-                  <BarChart2 className="h-5 w-5" /> Plotly Bar Chart Example Rendered Here
-                </p>
-             </div>
+             {showcaseData.visualizations.map((chart: any, i: number) => (
+               <div key={i} className="h-[400px] border rounded-lg p-2 shadow-sm bg-white dark:bg-background">
+                 <PlotlyChart data={chart.data} layout={chart.layout} />
+               </div>
+             ))}
           </div>
         </div>
 

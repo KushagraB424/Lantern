@@ -58,9 +58,9 @@ CRITICAL REQUIREMENTS:
   "tables": {{ "table_name": [ {{ "col1": "val1" }} ] }},
   "aggregations": {{ "metric_name": "value" }}
 }}
-4. Write ONLY the python code in a ```python ... ``` block. BE EXTREMELY CONCISE. Do not include markdown headers, explanations, or long comments, as you have a strict token limit and your code will get truncated.
+4. Write ONLY the python code in a ```python ... ``` block. BE EXTREMELY CONCISE. Do not include markdown headers, explanations, or long comments, as you have a strict token limit and your code will get truncated. Do NOT use print() for debugging.
 """),
-        ("human", "Analysis Plan:\n{plan}\n\nPlease generate the Python code.")
+        ("human", "Analysis Plan:\n{plan}\n\nPlease generate the Python code. Keep it brief to save tokens.")
     ])
     
     max_retries = 3
