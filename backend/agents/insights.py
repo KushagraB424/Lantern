@@ -29,7 +29,9 @@ Keep it extremely concise (max 3-5 bullet points total).
     ])
     
     chain = prompt | llm
-    response = chain.invoke({"artifact": json.dumps(artifact, indent=2)})
-    
-    state["insights"] = response.content
+    try:
+        response = chain.invoke({"artifact": json.dumps(artifact, indent=2)})
+        state["insights"] = response.content
+    except Exception as e:
+        state["insights"] = f"Error generating insights: {str(e)}"
     return state

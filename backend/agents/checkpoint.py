@@ -22,6 +22,7 @@ def get_checkpointer():
                 conninfo=db_url,
                 max_size=5,
                 min_size=1,
+                check=ConnectionPool.check_connection,
                 kwargs={"autocommit": True, "prepare_threshold": 0},
             )
         # We need to setup the checkpointer tables. 

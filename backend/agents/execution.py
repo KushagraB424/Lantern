@@ -59,6 +59,7 @@ CRITICAL REQUIREMENTS:
   "aggregations": {{ "metric_name": "value" }}
 }}
 4. Write ONLY the python code in a ```python ... ``` block. BE EXTREMELY CONCISE. Do not include markdown headers, explanations, or long comments, as you have a strict token limit and your code will get truncated. Do NOT use print() for debugging.
+5. IMPORTANT: Use modern Pandas methods. `df.append` is removed in Pandas 2.0, use `pd.concat` instead.
 """),
         ("human", "Analysis Plan:\n{plan}\n\nPlease generate the Python code. Keep it brief to save tokens.")
     ])
@@ -72,20 +73,25 @@ CRITICAL REQUIREMENTS:
     chain = prompt | llm
     
     while attempt < max_retries:
-        if attempt == 0:
-            response = chain.invoke({"plan": plan})
-        else:
-            correction_prompt = ChatPromptTemplate.from_messages([
-                ("system", "You are an expert Python Data Scientist."),
-                ("human", "The following python code failed to execute:\n```python\n{code}\n```\n\nError:\n{error_message}\n\nPlease fix the code and return only the corrected python code block.")
-            ])
-            correction_chain = correction_prompt | llm
-            response = correction_chain.invoke({
-                "code": code,
-                "error_message": error_message
-            })
-            
-        code = extract_python_code(response.content)
+        try:
+            if attempt == 0:
+                response = chain.invoke({"plan": plan})
+            else:
+                correction_prompt = ChatPromptTemplate.from_messages([
+                    ("system", "You are an expert Python Data Scientist."),
+                    ("human", "The following python code failed to execute:\n```python\n{code}\n```\n\nError:\n{error_message}\n\nPlease fix the code and return only the corrected python code block.")
+                ])
+                correction_chain = correction_prompt | llm
+                response = correction_chain.invoke({
+                    "code": code,
+                    "error_message": error_message
+                })
+                
+            code = extract_python_code(response.content)
+        except Exception as e:
+            error_message = f"LLM Error: {str(e)}"
+            attempt += 1
+            continue
         sandbox_result = execute_python(code, dataset_path=dataset_path)
         
         if sandbox_result["status"] == "success":

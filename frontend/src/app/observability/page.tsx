@@ -55,6 +55,26 @@ export default function ObservabilityPage() {
     }
   };
 
+  const nodes = initialNodes.map(node => {
+    const isExecuted = trace.some(step => step.node === node.id || (node.id === "START" && trace.length > 0));
+    return {
+      ...node,
+      style: isExecuted 
+        ? { ...node.style, backgroundColor: '#dcfce7', borderColor: '#22c55e', color: '#166534', fontWeight: 'bold' } 
+        : node.style
+    };
+  });
+
+  const edges = initialEdges.map(edge => {
+    const sourceExecuted = trace.some(step => step.node === edge.source || edge.source === "START");
+    const targetExecuted = trace.some(step => step.node === edge.target);
+    return {
+      ...edge,
+      style: sourceExecuted && targetExecuted ? { stroke: '#22c55e', strokeWidth: 2 } : edge.style,
+      animated: sourceExecuted && !targetExecuted
+    };
+  });
+
   return (
     <div className="flex flex-col h-full gap-6">
       <div className="space-y-1">
@@ -77,8 +97,8 @@ export default function ObservabilityPage() {
         {/* React Flow Graph */}
         <div className="lg:col-span-2 rounded-xl border bg-card overflow-hidden h-[600px] relative shadow-sm">
           <ReactFlow 
-            nodes={initialNodes} 
-            edges={initialEdges} 
+            nodes={nodes} 
+            edges={edges} 
             fitView
             className="bg-slate-50 dark:bg-slate-900"
           >

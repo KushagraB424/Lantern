@@ -34,6 +34,7 @@ CRITICAL REQUIREMENTS:
 3. Put all serialized charts into a list.
 4. Your script MUST output ONLY the final list of serialized chart JSON strings by printing a JSON array to stdout: `print(json.dumps(chart_json_list))`
 5. Write ONLY the python code in a ```python ... ``` block. BE EXTREMELY CONCISE. Do not include markdown headers, explanations, or long comments, as you have a strict token limit and your code will get truncated.
+6. IMPORTANT: Use modern Pandas methods. `df.append` is removed in Pandas 2.0, use `pd.concat` instead.
 """),
         ("human", "Here is the structure of the JSON artifact:\n{artifact_summary}\n\nPlease generate the Python code. Keep it brief to save tokens.")
     ])
@@ -53,20 +54,25 @@ CRITICAL REQUIREMENTS:
     chain = prompt | llm
     
     while attempt < max_retries:
-        if attempt == 0:
-            response = chain.invoke({"artifact_summary": json.dumps(artifact_summary, indent=2)})
-        else:
-            correction_prompt = ChatPromptTemplate.from_messages([
-                ("system", "You are an expert Data Visualization Specialist."),
-                ("human", "The following python code failed to execute:\n```python\n{code}\n```\n\nError:\n{error_message}\n\nPlease fix the code and return only the corrected python code block.")
-            ])
-            correction_chain = correction_prompt | llm
-            response = correction_chain.invoke({
-                "code": code,
-                "error_message": error_message
-            })
-            
-        code = extract_python_code(response.content)
+        try:
+            if attempt == 0:
+                response = chain.invoke({"artifact_summary": json.dumps(artifact_summary, indent=2)})
+            else:
+                correction_prompt = ChatPromptTemplate.from_messages([
+                    ("system", "You are an expert Data Visualization Specialist."),
+                    ("human", "The following python code failed to execute:\n```python\n{code}\n```\n\nError:\n{error_message}\n\nPlease fix the code and return only the corrected python code block.")
+                ])
+                correction_chain = correction_prompt | llm
+                response = correction_chain.invoke({
+                    "code": code,
+                    "error_message": error_message
+                })
+                
+            code = extract_python_code(response.content)
+        except Exception as e:
+            error_message = f"LLM Error: {str(e)}"
+            attempt += 1
+            continue
         actual_json_str = json.dumps(artifact).replace('\\', '\\\\').replace('"', '\\"').replace("'", "\\'")
         executable_code = f"import json\nimport pandas as pd\nimport plotly.express as px\nimport plotly.graph_objects as go\nARTIFACT_JSON_STR = '{actual_json_str}'\n" + code
         

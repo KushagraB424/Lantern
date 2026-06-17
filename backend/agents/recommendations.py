@@ -24,7 +24,9 @@ Be extremely concise (max 3-5 bullet points total).
     ])
     
     chain = prompt | llm
-    response = chain.invoke({"insights": insights})
-    
-    state["recommendations"] = response.content
+    try:
+        response = chain.invoke({"insights": insights})
+        state["recommendations"] = response.content
+    except Exception as e:
+        state["recommendations"] = f"Error generating recommendations: {str(e)}"
     return state
