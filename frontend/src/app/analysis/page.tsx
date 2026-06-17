@@ -58,13 +58,29 @@ function AnalysisConfig() {
     }));
   }, [datasetId, threadId, plan, qualityScore, executionData]);
 
-  // Redirect to last dataset if none is provided
+  // Redirect to last dataset if none is provided, or save the current one
   useEffect(() => {
     if (!datasetId) {
-      const lastDatasetId = localStorage.getItem("last_dataset_id");
+      let lastDatasetId = localStorage.getItem("last_dataset_id");
+      
+      // Fallback to history reports if no explicit last dataset is set
+      if (!lastDatasetId) {
+        try {
+          const historyReportsStr = localStorage.getItem("history_reports") || "[]";
+          const historyReports = JSON.parse(historyReportsStr);
+          if (historyReports.length > 0) {
+            lastDatasetId = historyReports[0].dataset_id;
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+      
       if (lastDatasetId) {
         router.replace(`/analysis?dataset=${lastDatasetId}`);
       }
+    } else {
+      localStorage.setItem("last_dataset_id", datasetId);
     }
   }, [datasetId, router]);
 
