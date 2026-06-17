@@ -20,7 +20,7 @@ const initialNodes = [
   { id: "END", data: { label: "END" }, position: { x: 250, y: 950 }, type: 'output' },
 ];
 
-const initialEdges = [
+const initialEdges: any[] = [
   { id: "e-start-understanding", source: "START", target: "dataset_understanding", animated: true },
   { id: "e-understanding-quality", source: "dataset_understanding", target: "data_quality", animated: true },
   { id: "e-quality-planning", source: "data_quality", target: "analysis_planning", animated: true },
