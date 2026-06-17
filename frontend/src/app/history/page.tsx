@@ -11,6 +11,7 @@ export default function HistoryPage() {
   const [results, setResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +83,11 @@ export default function HistoryPage() {
       <div className="space-y-6">
         {results.length > 0 ? (
           results.map((result, i) => (
-            <div key={i} className="rounded-xl border bg-card p-6 shadow-sm space-y-4 transition-all hover:border-primary">
+            <div 
+              key={i} 
+              className="rounded-xl border bg-card p-6 shadow-sm space-y-4 transition-all hover:border-primary cursor-pointer"
+              onClick={() => setExpandedId(expandedId === i ? null : i)}
+            >
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="text-lg font-bold flex items-center gap-2">
@@ -103,11 +108,13 @@ export default function HistoryPage() {
                 <p className="text-xs font-mono text-muted-foreground mb-2 flex items-center gap-1">
                   <BarChart2 className="h-3 w-3" /> Report Preview
                 </p>
-                <div className="text-sm h-32 overflow-hidden relative">
-                  <div className="prose prose-sm dark:prose-invert">
+                <div className={`text-sm relative transition-all duration-300 ${expandedId === i ? 'h-auto' : 'h-32 overflow-hidden'}`}>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
                     <ReactMarkdown>{result.report_text}</ReactMarkdown>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-muted to-transparent"></div>
+                  {expandedId !== i && (
+                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-muted to-transparent"></div>
+                  )}
                 </div>
               </div>
             </div>
