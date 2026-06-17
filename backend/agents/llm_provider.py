@@ -65,7 +65,7 @@ class DummyEmbeddings(Embeddings):
     def embed_query(self, text):
         return [0.0]*768
 
-def get_embeddings(provider: str = "google", model_name: str = "models/text-embedding-004") -> Embeddings:
+def get_embeddings(provider: str = "google", model_name: str = "models/gemini-embedding-2") -> Embeddings:
     if provider == "google":
         api_key = os.getenv("GOOGLE_API_KEY")
         if api_key and api_key != "placeholder_key":

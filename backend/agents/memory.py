@@ -27,7 +27,7 @@ def get_vector_store():
         print("Warning: DATABASE_URL not set, memory features will be disabled.")
         return None
         
-    embeddings = get_embeddings(provider="google", model_name="models/text-embedding-004")
+    embeddings = get_embeddings(provider="google", model_name="models/gemini-embedding-2")
     
     return PGVector(
         embeddings=embeddings,
