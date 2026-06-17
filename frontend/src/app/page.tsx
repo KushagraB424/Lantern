@@ -40,7 +40,8 @@ export default function Home() {
       }
 
       console.log("Upload success:", data.metadata);
-      // alert(`Success! Found ${data.metadata.rows} rows and ${data.metadata.columns} columns.`);
+      
+      localStorage.setItem("last_dataset_id", data.metadata.dataset_id);
       
       router.push(`/analysis?dataset=${data.metadata.dataset_id}`);
     } catch (err: any) {

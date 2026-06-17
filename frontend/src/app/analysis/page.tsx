@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState, Suspense, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Play, Settings2, CheckCircle2, Edit3, Loader2, Code2, BarChart3, Terminal, FileText, Download } from "lucide-react";
@@ -11,6 +11,7 @@ import remarkGfm from 'remark-gfm';
 function AnalysisConfig() {
   const searchParams = useSearchParams();
   const datasetId = searchParams.get("dataset");
+  const router = useRouter();
 
   const [provider, setProvider] = useState("google");
   const [model, setModel] = useState("gemini-2.5-flash");
@@ -56,6 +57,16 @@ function AnalysisConfig() {
       executionData
     }));
   }, [datasetId, threadId, plan, qualityScore, executionData]);
+
+  // Redirect to last dataset if none is provided
+  useEffect(() => {
+    if (!datasetId) {
+      const lastDatasetId = localStorage.getItem("last_dataset_id");
+      if (lastDatasetId) {
+        router.replace(`/analysis?dataset=${lastDatasetId}`);
+      }
+    }
+  }, [datasetId, router]);
 
   if (!datasetId) {
     return (
