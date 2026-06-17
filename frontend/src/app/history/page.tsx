@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, FileText, BarChart2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,19 @@ export default function HistoryPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Load recent local reports on initial render
+    try {
+      const historyReportsStr = localStorage.getItem("history_reports") || "[]";
+      const historyReports = JSON.parse(historyReportsStr);
+      if (historyReports.length > 0) {
+        setResults(historyReports.map((r: any) => ({ ...r, similarity_score: 0 }))); // default score for display
+      }
+    } catch (e) {
+      console.error("Failed to load initial history reports", e);
+    }
+  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
