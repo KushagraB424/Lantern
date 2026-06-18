@@ -51,7 +51,7 @@ def analysis_execution_node(state: GraphState) -> GraphState:
 Your task is to write Python code using `pandas` to execute the provided Analysis Plan.
 
 CRITICAL REQUIREMENTS:
-1. The dataset path is ALREADY provided as the global variable `DATASET_PATH`. You MUST use it exactly like this: `df = pd.read_csv(DATASET_PATH, encoding_errors='replace')`. Do NOT use placeholders like 'data.csv'.
+1. The dataset path is ALREADY provided as the global variable `DATASET_PATH`. You MUST use it exactly like this: `df = pd.read_csv(DATASET_PATH, encoding_errors='replace')`. Do NOT use placeholders like 'data.csv'. Do NOT add any other arguments to `pd.read_csv`.
 2. Your code MUST output its final results as a single structured JSON object printed to stdout using `print(json.dumps(...))`. Do not print anything else.
 3. The JSON must have the following schema:
 {{
@@ -78,7 +78,7 @@ CRITICAL REQUIREMENTS:
                 response = chain.invoke({"plan": plan})
             else:
                 correction_prompt = ChatPromptTemplate.from_messages([
-                    ("system", "You are an expert Python Data Scientist."),
+                    ("system", "You are an expert Python Data Scientist. CRITICAL: When fixing the code, do NOT add `low_memory`, `engine`, or `on_bad_lines` arguments to `pd.read_csv`. Stick EXACTLY to `df = pd.read_csv(DATASET_PATH, encoding_errors='replace')`."),
                     ("human", "The following python code failed to execute:\n```python\n{code}\n```\n\nError:\n{error_message}\n\nPlease fix the code and return only the corrected python code block.")
                 ])
                 correction_chain = correction_prompt | llm
