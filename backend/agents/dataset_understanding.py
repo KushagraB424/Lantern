@@ -33,7 +33,7 @@ def dataset_understanding_node(state: GraphState) -> GraphState:
     if dataset_path:
         try:
             if dataset_path.endswith('.csv'):
-                df_full = pd.read_csv(dataset_path)
+                df_full = pd.read_csv(dataset_path, encoding='unicode_escape')
             else:
                 df_full = pd.read_excel(dataset_path)
                 
