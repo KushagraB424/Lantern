@@ -33,7 +33,7 @@ def data_quality_node(state: GraphState) -> GraphState:
     if dataset_path:
         try:
             if dataset_path.endswith('.csv'):
-                df = pd.read_csv(dataset_path, encoding='unicode_escape')
+                df = pd.read_csv(dataset_path, encoding_errors='replace')
             else:
                 df = pd.read_excel(dataset_path)
                 

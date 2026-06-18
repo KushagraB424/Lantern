@@ -51,7 +51,7 @@ def analysis_execution_node(state: GraphState) -> GraphState:
 Your task is to write Python code using `pandas` to execute the provided Analysis Plan.
 
 CRITICAL REQUIREMENTS:
-1. The dataset path is ALREADY provided as the global variable `DATASET_PATH`. You MUST use it exactly like this: `df = pd.read_csv(DATASET_PATH, encoding='unicode_escape')`. Do NOT use placeholders like 'data.csv'.
+1. The dataset path is ALREADY provided as the global variable `DATASET_PATH`. You MUST use it exactly like this: `df = pd.read_csv(DATASET_PATH, encoding_errors='replace')`. Do NOT use placeholders like 'data.csv'.
 2. Your code MUST output its final results as a single structured JSON object printed to stdout using `print(json.dumps(...))`. Do not print anything else.
 3. The JSON must have the following schema:
 {{
